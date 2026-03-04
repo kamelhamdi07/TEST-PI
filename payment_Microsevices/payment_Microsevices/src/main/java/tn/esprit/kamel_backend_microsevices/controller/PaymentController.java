@@ -10,7 +10,7 @@ import tn.esprit.kamel_backend_microsevices.service.PaymentService;
 
 @RestController
 @RequestMapping("/api/payments")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 
 public class PaymentController {
 

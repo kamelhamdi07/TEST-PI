@@ -1,0 +1,91 @@
+/* CARD CONTAINER */
+.reports-card {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  margin-top: 20px;
+}
+
+/* TITLE */
+.reports-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #5b3cc4;
+  margin-bottom: 20px;
+}
+
+/* FILTERS */
+.filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.filters input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  outline: none;
+  transition: 0.3s;
+}
+
+.filters input:focus {
+  border-color: #6a5acd;
+  box-shadow: 0 0 0 2px rgba(106,90,205,0.2);
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* TABLE HEADER */
+thead {
+  background: linear-gradient(135deg, #6a5acd, #7b68ee);
+  color: white;
+}
+
+th {
+  padding: 14px;
+  text-align: left;
+  font-weight: 500;
+}
+
+/* TABLE BODY */
+td {
+  padding: 14px;
+  border-bottom: 1px solid #f1f1f1;
+  color: #555;
+}
+
+/* ROW HOVER */
+tbody tr:hover {
+  background-color: #f5f3ff;
+  transition: 0.2s;
+}
+
+/* REVENUE STYLE */
+.amount {
+  font-weight: bold;
+  color: #28a745;
+}
+
+/* DELETE BUTTON */
+.delete-btn {
+  background: #ff4d6d;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.delete-btn:hover {
+  background: #e63950;
+  transform: scale(1.05);
+}

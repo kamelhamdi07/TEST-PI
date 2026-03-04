@@ -1,0 +1,127 @@
+.payment-wrapper {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.payment-card {
+  width: 100%;
+  max-width: 1000px;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+  transition: 0.3s ease;
+}
+
+.payment-card:hover {
+  transform: translateY(-4px);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.card-header h2 {
+  font-weight: 600;
+}
+
+.count {
+  background: linear-gradient(135deg,#6a11cb,#2575fc);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.modern-table thead {
+  background: #f5f6fa;
+}
+
+.modern-table th {
+  padding: 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.modern-table td {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.modern-table tr:hover {
+  background: #f9f9ff;
+  transition: 0.2s;
+}
+
+.amount {
+  font-weight: 600;
+  color: #2575fc;
+}
+
+.badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge.paid {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge.failed {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.delete-btn {
+  background: #ff4d4f;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.delete-btn:hover {
+  background: #d9363e;
+  transform: scale(1.05);
+}
+.filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.filters input,
+.filters select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  outline: none;
+  transition: 0.2s;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #6a11cb;
+  box-shadow: 0 0 0 2px rgba(106,17,203,0.2);
+}

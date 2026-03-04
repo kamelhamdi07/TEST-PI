@@ -1,0 +1,48 @@
+<section class="payment-wrapper">
+
+  <div class="payment-card">
+
+    <div class="card-header">
+      <div class="icon">💳</div>
+      <h2>Register New Payment</h2>
+      <p>Secure transaction processing</p>
+    </div>
+
+    <form (ngSubmit)="submit()" class="modern-form">
+
+      <div class="form-row">
+        <div class="input-group">
+          <label>Amount</label>
+          <input type="number"
+                 [(ngModel)]="payment.amount"
+                 name="amount"
+                 required>
+        </div>
+
+        <div class="input-group">
+          <label>Payment Method</label>
+          <select [(ngModel)]="payment.method" name="method">
+            <option value="">Select method</option>
+            <option value="CARD">Card</option>
+            <option value="CASH">Cash</option>
+            <option value="ONLINE">Online</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-group full">
+        <label>Date</label>
+        <input type="date"
+               [(ngModel)]="payment.date"
+               name="date">
+      </div>
+
+      <button class="btn-premium">
+        Process Payment
+      </button>
+
+    </form>
+
+  </div>
+
+</section>

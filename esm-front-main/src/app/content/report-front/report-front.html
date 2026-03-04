@@ -1,0 +1,47 @@
+<section class="report-hero">
+  <div class="hero-content">
+    <h1>Financial Report Dashboard</h1>
+    <p>Generate structured and professional reports</p>
+  </div>
+</section>
+
+<section class="report-wrapper">
+  <div class="report-glass-card">
+
+    <div class="card-header">
+      <div class="icon">📊</div>
+      <h2>Create Report</h2>
+    </div>
+
+    <form (ngSubmit)="submit()" class="modern-form">
+
+      <div class="input-group">
+        <input type="text"
+               [(ngModel)]="report.title"
+               name="title"
+               required>
+        <label>Report Title</label>
+      </div>
+
+      <div class="input-group">
+        <textarea rows="3"
+                  [(ngModel)]="report.description"
+                  name="description"></textarea>
+        <label>Description</label>
+      </div>
+
+      <div class="input-group">
+        <input type="number"
+               [(ngModel)]="report.totalRevenue"
+               name="totalRevenue">
+        <label>Total Revenue</label>
+      </div>
+
+      <button class="btn-premium">
+        <span>Save Report</span>
+      </button>
+
+    </form>
+
+  </div>
+</section>
