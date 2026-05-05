@@ -1,0 +1,149 @@
+.floating-cart {
+  position: fixed;
+  top: 96px;
+  right: 20px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.floating-cart-btn {
+  border: none;
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(45deg, #6a11cb, #2575fc);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(37, 117, 252, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.cart-icon {
+  line-height: 1;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border: 2px solid #fff;
+}
+
+.floating-cart-panel {
+  width: min(360px, 90vw);
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.15);
+}
+
+.floating-cart-title {
+  margin: 0 0 8px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.floating-cart-empty {
+  margin: 0;
+  color: #666;
+  font-size: 13px;
+}
+
+.floating-cart-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.floating-cart-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  color: #333;
+}
+
+.floating-cart-footer {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid #ededed;
+  padding-top: 10px;
+}
+
+.floating-cart-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.floating-cart-item-name {
+  max-width: 58%;
+}
+
+.floating-cart-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.remove-item-btn {
+  border: 1px solid #f1c7c7;
+  border-radius: 999px;
+  background: #fff5f5;
+  color: #b42318;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.clear-cart-btn {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f8f8f8;
+  color: #333;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cart-toast {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1300;
+  background: #1f2937;
+  color: #fff;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
+}

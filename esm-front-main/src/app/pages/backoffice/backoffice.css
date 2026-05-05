@@ -1,0 +1,10 @@
+/* Lien actif : Reports ou Payments sélectionné */
+.nav-link.nav-active {
+  background: linear-gradient(135deg, #6a5acd, #7b68ee) !important;
+  color: white !important;
+}
+
+.nav-link.nav-active:hover {
+  background: linear-gradient(135deg, #5a4abd, #6a5acd) !important;
+  color: white !important;
+}

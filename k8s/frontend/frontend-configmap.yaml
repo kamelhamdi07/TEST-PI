@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: pi-platform
+data:
+  API_GATEWAY_URL: http://api-gateway:8080

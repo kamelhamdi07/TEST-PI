@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eureka-server-config
+  namespace: pi-platform
+data:
+  SPRING_APPLICATION_NAME: eureka-server
+  EUREKA_CLIENT_REGISTER_WITH_EUREKA: "false"
+  EUREKA_CLIENT_FETCH_REGISTRY: "false"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,metrics
+  MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: always

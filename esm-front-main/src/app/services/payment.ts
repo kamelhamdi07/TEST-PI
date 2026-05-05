@@ -23,8 +23,12 @@ export class PaymentService {
   return this.http.get<any[]>(this.apiUrl);
 }
 
-delete(id: number) {
-  return this.http.delete(`${this.apiUrl}/${id}`);
-}
+  update(id: number, payment: any) {
+    return this.http.put(`${this.apiUrl}/${id}`, payment);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 
 }

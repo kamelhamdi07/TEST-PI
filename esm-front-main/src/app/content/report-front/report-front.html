@@ -1,47 +1,87 @@
 <section class="report-hero">
   <div class="hero-content">
-    <h1>Financial Report Dashboard</h1>
-    <p>Generate structured and professional reports</p>
+    <h1>Centre de reclamation</h1>
+    <p>Signale un probleme et notre equipe te repondra rapidement.</p>
   </div>
 </section>
 
 <section class="report-wrapper">
-  <div class="report-glass-card">
-
+  <div class="report-create-card">
     <div class="card-header">
-      <div class="icon">📊</div>
-      <h2>Create Report</h2>
+      <div class="icon">📝</div>
+      <h2>Nouvelle reclamation</h2>
     </div>
 
-    <form (ngSubmit)="submit()" class="modern-form">
+    <form #reportForm="ngForm" (ngSubmit)="submit(reportForm)" class="modern-form">
+      <div class="input-group">
+        <label>Email etudiant</label>
+        <input type="email"
+               [(ngModel)]="report.studentEmail"
+               name="studentEmail"
+               required
+               email
+               #studentEmail="ngModel">
+        <div class="field-error" *ngIf="studentEmail.invalid && studentEmail.touched">
+          Email invalide.
+        </div>
+      </div>
 
       <div class="input-group">
+        <label>Sujet</label>
         <input type="text"
-               [(ngModel)]="report.title"
-               name="title"
-               required>
-        <label>Report Title</label>
+               [(ngModel)]="report.subject"
+               name="subject"
+               required
+               minlength="5"
+               maxlength="150"
+               #subject="ngModel">
+        <div class="field-error" *ngIf="subject.invalid && subject.touched">
+          Sujet obligatoire (min 5 caracteres).
+        </div>
       </div>
 
       <div class="input-group">
-        <textarea rows="3"
-                  [(ngModel)]="report.description"
-                  name="description"></textarea>
-        <label>Description</label>
+        <label>Categorie</label>
+        <select [(ngModel)]="report.category" name="category" required>
+          <option value="PAYMENT">Paiement</option>
+          <option value="COURSE">Cours</option>
+          <option value="TECHNICAL">Technique</option>
+          <option value="OTHER">Autre</option>
+        </select>
       </div>
 
       <div class="input-group">
-        <input type="number"
-               [(ngModel)]="report.totalRevenue"
-               name="totalRevenue">
-        <label>Total Revenue</label>
+        <label>Priorite</label>
+        <select [(ngModel)]="report.priority" name="priority" required>
+          <option value="LOW">Basse</option>
+          <option value="MEDIUM">Moyenne</option>
+          <option value="HIGH">Haute</option>
+        </select>
       </div>
 
-      <button class="btn-premium">
-        <span>Save Report</span>
+      <div class="input-group">
+        <label>Message</label>
+        <textarea rows="5"
+                  [(ngModel)]="report.message"
+                  name="message"
+                  required
+                  minlength="10"
+                  maxlength="2000"
+                  #message="ngModel"></textarea>
+        <div class="field-error" *ngIf="message.invalid && message.touched">
+          Message obligatoire (min 10 caracteres).
+        </div>
+      </div>
+
+      <button type="submit" class="btn-premium" [disabled]="reportForm.invalid">
+        Envoyer la reclamation
       </button>
-
     </form>
-
   </div>
 </section>
+
+<!-- Notification toast (hors de la card pour être toujours visible) -->
+<div *ngIf="notification" class="toast" [class.toast-success]="notification.type === 'success'" [class.toast-error]="notification.type === 'error'">
+  <span class="toast-message">{{ notification.message }}</span>
+  <button type="button" class="toast-close" (click)="closeNotification()" aria-label="Fermer">×</button>
+</div>

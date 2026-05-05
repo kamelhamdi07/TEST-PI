@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: pi-platform
+data:
+  MYSQL_DATABASE: pidev

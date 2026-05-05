@@ -4,6 +4,7 @@ import tn.esprit.reportingservice.entity.Report;
 import tn.esprit.reportingservice.repository.ReportRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,6 +17,12 @@ public class ReportService {
     }
 
     public Report create(Report r) {
+        LocalDateTime now = LocalDateTime.now();
+        if (r.getStatus() == null || r.getStatus().isBlank()) {
+            r.setStatus("IN_PROGRESS");
+        }
+        r.setCreatedDate(now);
+        r.setUpdatedDate(now);
         return repository.save(r);
     }
 
@@ -29,10 +36,25 @@ public class ReportService {
 
     public Report update(Long id, Report r) {
         Report existing = repository.findById(id).orElseThrow();
-        existing.setTitle(r.getTitle());
-        existing.setDescription(r.getDescription());
-        existing.setTotalRevenue(r.getTotalRevenue());
-        existing.setCreatedDate(r.getCreatedDate());
+        existing.setSubject(r.getSubject());
+        existing.setMessage(r.getMessage());
+        existing.setStudentEmail(r.getStudentEmail());
+        existing.setCategory(r.getCategory());
+        existing.setPriority(r.getPriority());
+        if (r.getStatus() != null && !r.getStatus().isBlank()) {
+            existing.setStatus(r.getStatus());
+        }
+        existing.setUpdatedDate(LocalDateTime.now());
+        return repository.save(existing);
+    }
+
+    public Report updateStatus(Long id, String status) {
+        Report existing = repository.findById(id).orElseThrow();
+        if (!"IN_PROGRESS".equals(existing.getStatus())) {
+            return existing;
+        }
+        existing.setStatus(status);
+        existing.setUpdatedDate(LocalDateTime.now());
         return repository.save(existing);
     }
 

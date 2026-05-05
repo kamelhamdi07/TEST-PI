@@ -6,6 +6,7 @@ import tn.esprit.reportingservice.entity.Report;
 import tn.esprit.reportingservice.service.ReportService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.List;
 
 @RestController
@@ -38,6 +39,11 @@ public class ReportController {
     @PutMapping("/{id}")
     public Report update(@PathVariable Long id, @RequestBody Report r) {
         return service.update(id, r);
+    }
+
+    @PatchMapping("/{id}/status")
+    public Report updateStatus(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        return service.updateStatus(id, payload.getOrDefault("status", "IN_PROGRESS"));
     }
 
     @DeleteMapping("/{id}")

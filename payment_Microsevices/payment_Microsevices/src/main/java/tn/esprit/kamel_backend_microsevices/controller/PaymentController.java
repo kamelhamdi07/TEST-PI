@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import tn.esprit.kamel_backend_microsevices.entitiy.PaymentEntity;
+import tn.esprit.kamel_backend_microsevices.service.EmailService;
 import tn.esprit.kamel_backend_microsevices.service.PaymentService;
 
 
@@ -13,11 +14,14 @@ import tn.esprit.kamel_backend_microsevices.service.PaymentService;
 @CrossOrigin(origins = "http://localhost:4200")
 
 public class PaymentController {
+    private static final String DEFAULT_RECEIVER = "kamel.hamdi@esprit.tn";
 
     private final PaymentService service;
+    private final EmailService emailService;
 
-    public PaymentController(PaymentService service) {
+    public PaymentController(PaymentService service, EmailService emailService) {
         this.service = service;
+        this.emailService = emailService;
     }
 
     @PostMapping
@@ -30,7 +34,7 @@ public class PaymentController {
         return ResponseEntity.ok(service.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:\\d+}")
     public ResponseEntity<PaymentEntity> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
@@ -49,5 +53,15 @@ public class PaymentController {
     @GetMapping("/by-student/{studentId}")
     public ResponseEntity<List<PaymentEntity>> byStudent(@PathVariable Long studentId) {
         return ResponseEntity.ok(service.findByStudent(studentId));
+    }
+
+    @GetMapping("/test-email")
+    public ResponseEntity<String> testEmail() {
+        emailService.sendEmail(
+                DEFAULT_RECEIVER,
+                "SMTP Test - Payment Service",
+                "This is a test email from payment service configuration."
+        );
+        return ResponseEntity.ok("Test email sent");
     }
 }

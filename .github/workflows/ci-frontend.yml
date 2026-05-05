@@ -1,0 +1,61 @@
+name: CI frontend
+
+on:
+  push:
+    branches: [main, master, develop]
+    paths:
+      - "esm-front-main/**"
+      - ".github/workflows/ci-frontend.yml"
+  pull_request:
+    paths:
+      - "esm-front-main/**"
+      - ".github/workflows/ci-frontend.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  SERVICE_NAME: frontend
+  SERVICE_DIR: esm-front-main
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/frontend
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: esm-front-main/package-lock.json
+      - name: Install dependencies
+        working-directory: ${{ env.SERVICE_DIR }}
+        run: npm ci
+      - name: Tests and coverage
+        working-directory: ${{ env.SERVICE_DIR }}
+        run: npm run coverage
+      - name: SonarQube analysis
+        working-directory: ${{ env.SERVICE_DIR }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: npm run sonar -- -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.token=${SONAR_TOKEN}
+      - name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ env.SERVICE_DIR }}
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest

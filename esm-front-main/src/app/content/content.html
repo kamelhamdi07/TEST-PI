@@ -1,4 +1,44 @@
 <main class="min-h-screen bg-body-bg px-4 py-10 space-y-12">
+  <div *ngIf="addToastMessage" class="cart-toast">
+    {{ addToastMessage }}
+  </div>
+
+  <div class="floating-cart">
+    <button type="button" (click)="toggleCart()" class="floating-cart-btn" aria-label="Ouvrir le panier">
+      <span class="cart-icon" aria-hidden="true">🛒</span>
+      <span class="cart-badge">{{ totalCourses }}</span>
+    </button>
+
+    <div *ngIf="showCart" class="floating-cart-panel">
+      <p class="floating-cart-title">Votre panier</p>
+      <p class="floating-cart-empty" *ngIf="!canPay">Aucun cours ajoute.</p>
+
+      <ul *ngIf="canPay" class="floating-cart-list">
+        <li *ngFor="let item of cartItems">
+          <span class="floating-cart-item-name">{{ item.title }} x{{ item.quantity }}</span>
+          <div class="floating-cart-item-actions">
+            <strong>${{ (item.price * item.quantity).toFixed(2) }}</strong>
+            <button type="button" class="remove-item-btn" (click)="removeFromCart(item.id)">Supprimer</button>
+          </div>
+        </li>
+      </ul>
+
+      <div class="floating-cart-footer" *ngIf="canPay">
+        <strong>Total: ${{ cartTotal.toFixed(2) }}</strong>
+        <div class="floating-cart-footer-actions">
+          <button type="button" class="clear-cart-btn" (click)="clearCart()">Vider panier</button>
+          <button
+            type="button"
+            (click)="goToPayment()"
+            class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-secondary transition-colors"
+          >
+            Payer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- HERO -->
   <section
     class="mx-0 lg:mx-12 rounded-2xl bg-darkindigo text-white px-6 py-10 sm:px-10 md:py-14"
@@ -232,163 +272,36 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <!-- Course 1 -->
-        <article class="rounded-2xl bg-white border border-border overflow-hidden flex flex-col">
+        <article *ngFor="let course of courses" class="rounded-2xl bg-white border border-border overflow-hidden flex flex-col">
           <img
-            src="https://media.licdn.com/dms/image/v2/D4D12AQHO3pe-LmA37g/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1672309075415?e=2147483647&v=beta&t=kRqNRKduBcQ624caAIhliGoF869Dy5Ka9cStwz5AjnU"
-            alt="Business English course"
+            [src]="course.image"
+            [alt]="course.title"
             class="h-60 w-full object-cover"
           />
           <div class="p-6 flex flex-col justify-between flex-1">
             <div class="space-y-2">
               <p class="text-xs font-semibold text-primary uppercase">
-                Business English
+                {{ course.category }}
               </p>
               <h3 class="text-lg font-semibold text-darkindigo">
-                Professional Email Writing &amp; Negotiation Skills
+                {{ course.title }}
               </h3>
               <p class="text-xs text-content">
-                🕒 4 Lessons | 5 hours 35 minutes
-              </p>
-            </div>
-            <div class="mt-4 flex items-center justify-between text-sm">
-              <span class="font-semibold text-primary">Free</span>
-              <span class="text-content">Instructor: Jane Doe</span>
-              <span class="text-yellow-500">⭐ 5.0 <span class="text-content">(1)</span></span>
-            </div>
-          </div>
-        </article>
-
-        <!-- Course 2 -->
-        <article class="rounded-2xl bg-white border border-border overflow-hidden flex flex-col">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7vk-1bc9m14JeWEBJUCNw_zi2xIqnVAH2_A&s"
-            alt="IELTS course"
-            class="h-60 w-full object-cover"
-          />
-          <div class="p-6 flex flex-col justify-between flex-1">
-            <div class="space-y-2">
-              <p class="text-xs font-semibold text-primary uppercase">
-                IELTS Preparation
-              </p>
-              <h3 class="text-lg font-semibold text-darkindigo">
-                IELTS Academic Intensive: Band 7+ Guide
-              </h3>
-              <p class="text-xs text-content">
-                🕒 2 Lessons | 4 hours 00 minutes
+                🕒 {{ course.details }}
               </p>
             </div>
             <div class="mt-4 flex items-center justify-between text-sm">
               <span>
-                <span class="line-through text-content/70 mr-1">$100.00</span>
-                <span class="font-semibold text-primary">$70.00</span>
+                <span *ngIf="course.oldPrice" class="line-through text-content/70 mr-1">${{ course.oldPrice?.toFixed(2) }}</span>
+                <span class="font-semibold text-primary">{{ course.price === 0 ? 'Free' : ('$' + course.price.toFixed(2)) }}</span>
               </span>
-              <span class="text-content">Instructor: Jane Doe</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- Course 3 -->
-        <article class="rounded-2xl bg-white border border-border overflow-hidden flex flex-col">
-          <img
-            src="https://i.ytimg.com/vi/1n83x5g8pQk/maxresdefault.jpg"
-            alt="Conversational English course"
-            class="h-60 w-full object-cover"
-          />
-          <div class="p-6 flex flex-col justify-between flex-1">
-            <div class="space-y-2">
-              <p class="text-xs font-semibold text-primary uppercase">
-                Conversational English
-              </p>
-              <h3 class="text-lg font-semibold text-darkindigo">
-                Fluent Conversations: Speak English with Confidence
-              </h3>
-              <p class="text-xs text-content">
-                🕒 2 Lessons | 5 hours 35 minutes
-              </p>
-            </div>
-            <div class="mt-4 flex items-center justify-between text-sm">
-              <span class="font-semibold text-primary">$55.00</span>
-              <span class="text-content">Instructor: Jane Doe</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- Course 4 -->
-        <article class="rounded-2xl bg-white border border-border overflow-hidden flex flex-col">
-          <img
-            src="https://m.universalclass.com/i/course/eslgrammarwriting/teacheslgrammarwriting43303.jpg"
-            alt="Writing course"
-            class="h-60 w-full object-cover"
-          />
-          <div class="p-6 flex flex-col justify-between flex-1">
-            <div class="space-y-2">
-              <p class="text-xs font-semibold text-primary uppercase">
-                Writing
-              </p>
-              <h3 class="text-lg font-semibold text-darkindigo">
-                Mastering English Grammar and Essay Writing
-              </h3>
-              <p class="text-xs text-content">
-                🕒 3 Lessons | 2 hours 40 minutes
-              </p>
-            </div>
-            <div class="mt-4 flex items-center justify-between text-sm">
-              <span class="font-semibold text-primary">$60.00</span>
-              <span class="text-content">Instructor: Jane Doe</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- Course 5 -->
-        <article class="rounded-2xl bg-white border border-border overflow-hidden flex flex-col">
-          <img
-            src="https://live-production.wcms.abc-cdn.net.au/414d0c628cd1c7142fa6dd39487cb688?impolicy=wcms_crop_resize&cropH=713&cropW=1268&xPos=3&yPos=0&width=862&height=485"
-            alt="Meetings and presentations course"
-            class="h-60 w-full object-cover"
-          />
-          <div class="p-6 flex flex-col justify-between flex-1">
-            <div class="space-y-2">
-              <p class="text-xs font-semibold text-primary uppercase">
-                Business English
-              </p>
-              <h3 class="text-lg font-semibold text-darkindigo">
-                English for Meetings and Presentations
-              </h3>
-              <p class="text-xs text-content">
-                🕒 5 Lessons | 5 hours 35 minutes
-              </p>
-            </div>
-            <div class="mt-4 flex items-center justify-between text-sm">
-              <span class="font-semibold text-primary">$40.00</span>
-              <span class="text-content">Instructor: Jane Doe</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- Course 6 -->
-        <article class="rounded-2xl bg-white border border-border overflow-hidden flex flex-col">
-          <img
-            src="https://avatars.preply.com/i/video_thumbnails/bf006528-d971-443d-99a5-d02af050acc0.png"
-            alt="Pronunciation course"
-            class="h-60 w-full object-cover"
-          />
-          <div class="p-6 flex flex-col justify-between flex-1">
-            <div class="space-y-2">
-              <p class="text-xs font-semibold text-primary uppercase">
-                Pronunciation
-              </p>
-              <h3 class="text-lg font-semibold text-darkindigo">
-                Clear English: American Accent Training
-              </h3>
-              <p class="text-xs text-content">
-                🕒 6 Lessons | 3 hours 35 minutes
-              </p>
-            </div>
-            <div class="mt-4 flex items-center justify-between text-sm">
-              <span class="font-semibold text-primary">$66.00</span>
-              <span class="text-content">Instructor: Jane Doe</span>
-              <span class="text-yellow-500">⭐ 4.0 <span class="text-content">(2)</span></span>
+              <button
+                type="button"
+                (click)="addToCart(course)"
+                class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-secondary transition-colors"
+              >
+                Ajouter au panier
+              </button>
             </div>
           </div>
         </article>

@@ -8,7 +8,20 @@
       <p>Secure transaction processing</p>
     </div>
 
-    <form (ngSubmit)="submit()" class="modern-form">
+    <div class="cart-summary" *ngIf="cartItems.length > 0; else emptyCart">
+      <p class="cart-title">Cours sélectionnés</p>
+      <ul>
+        <li *ngFor="let item of cartItems">
+          <span>{{ item.title }} x{{ item.quantity }}</span>
+          <strong>${{ (item.price * item.quantity).toFixed(2) }}</strong>
+        </li>
+      </ul>
+    </div>
+    <ng-template #emptyCart>
+      <p class="empty-cart-message">Votre panier est vide. Ajoutez un cours avant de confirmer le paiement.</p>
+    </ng-template>
+
+   <form #paymentForm="ngForm" (ngSubmit)="submit(paymentForm)" class="modern-form">
 
       <div class="form-row">
         <div class="input-group">
@@ -16,17 +29,31 @@
           <input type="number"
                  [(ngModel)]="payment.amount"
                  name="amount"
-                 required>
+                 required
+                 min="0.01"
+                 step="0.01"
+                 readonly
+                 #amount="ngModel">
+          <div class="field-error" *ngIf="amount.invalid && amount.touched">
+            <span *ngIf="amount.errors?.['required']">Le montant est obligatoire.</span>
+            <span *ngIf="amount.errors?.['min']">Le montant doit être supérieur à 0.</span>
+          </div>
         </div>
 
         <div class="input-group">
           <label>Payment Method</label>
-          <select [(ngModel)]="payment.method" name="method">
+          <select [(ngModel)]="payment.method"
+                  name="method"
+                  required
+                  #method="ngModel">
             <option value="">Select method</option>
             <option value="CARD">Card</option>
             <option value="CASH">Cash</option>
             <option value="ONLINE">Online</option>
           </select>
+          <div class="field-error" *ngIf="method.invalid && method.touched">
+            <span *ngIf="method.errors?.['required']">Veuillez choisir un mode de paiement.</span>
+          </div>
         </div>
       </div>
 
@@ -34,15 +61,25 @@
         <label>Date</label>
         <input type="date"
                [(ngModel)]="payment.date"
-               name="date">
+               name="date"
+               required
+               #date="ngModel">
+        <div class="field-error" *ngIf="date.invalid && date.touched">
+          <span *ngIf="date.errors?.['required']">La date est obligatoire.</span>
+        </div>
       </div>
 
-      <button class="btn-premium">
+      <button type="submit" class="btn-premium" [disabled]="paymentForm.invalid || cartItems.length === 0">
         Process Payment
       </button>
 
     </form>
 
   </div>
-
 </section>
+
+<!-- Notification toast (hors de la card pour être toujours visible) -->
+<div *ngIf="notification" class="toast" [class.toast-success]="notification.type === 'success'" [class.toast-error]="notification.type === 'error'">
+  <span class="toast-message">{{ notification.message }}</span>
+  <button type="button" class="toast-close" (click)="closeNotification()" aria-label="Fermer">×</button>
+</div>

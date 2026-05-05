@@ -21,8 +21,11 @@ export const routes: Routes = [
   { path: 'signup', component: Signup },
   { path: 'forgot-password', component: Signin }, // temporary
   { path: 'support', component: Signin },         // temporary
-  { path: 'backoffice', component: Backoffice,children:[
-    {path: 'reports', component: Reports},{path: 'payments', component: Payments}] },
+  { path: 'backoffice', component: Backoffice, children: [
+    { path: '', redirectTo: 'reports', pathMatch: 'full' },
+    { path: 'reports', component: Reports },
+    { path: 'payments', component: Payments }
+  ]},
     
 
   { path: '**', redirectTo: '' }

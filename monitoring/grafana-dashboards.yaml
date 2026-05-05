@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-provider
+  namespace: monitoring
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: PI dashboards
+        orgId: 1
+        folder: PI Platform
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-kubernetes
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  kubernetes-overview.json: |
+    {
+      "title": "Kubernetes Pods and Resources",
+      "schemaVersion": 39,
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Running Pods",
+          "targets": [{"expr": "sum(kube_pod_status_phase{phase=\"Running\"})"}],
+          "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4}
+        },
+        {
+          "type": "stat",
+          "title": "Pending Pods",
+          "targets": [{"expr": "sum(kube_pod_status_phase{phase=\"Pending\"})"}],
+          "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4}
+        },
+        {
+          "type": "timeseries",
+          "title": "CPU Usage by Pod",
+          "targets": [{"expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\",pod!=\"\"}[5m])) by (namespace,pod)"}],
+          "gridPos": {"x": 0, "y": 4, "w": 12, "h": 8}
+        },
+        {
+          "type": "timeseries",
+          "title": "Memory Usage by Pod",
+          "targets": [{"expr": "sum(container_memory_working_set_bytes{container!=\"\",pod!=\"\"}) by (namespace,pod)"}],
+          "gridPos": {"x": 12, "y": 4, "w": 12, "h": 8}
+        }
+      ]
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-microservices
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  microservices-overview.json: |
+    {
+      "title": "Spring Boot Microservices",
+      "schemaVersion": 39,
+      "panels": [
+        {
+          "type": "stat",
+          "title": "HTTP Requests",
+          "targets": [{"expr": "sum(http_server_requests_seconds_count) by (app)"}],
+          "gridPos": {"x": 0, "y": 0, "w": 8, "h": 5}
+        },
+        {
+          "type": "timeseries",
+          "title": "Request Latency p95",
+          "targets": [{"expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, app))"}],
+          "gridPos": {"x": 8, "y": 0, "w": 16, "h": 8}
+        },
+        {
+          "type": "timeseries",
+          "title": "JVM Memory Used",
+          "targets": [{"expr": "sum(jvm_memory_used_bytes) by (app, area)"}],
+          "gridPos": {"x": 0, "y": 8, "w": 24, "h": 8}
+        }
+      ]
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-kafka
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  kafka-overview.json: |
+    {
+      "title": "Kafka Cluster",
+      "schemaVersion": 39,
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Kafka Brokers",
+          "targets": [{"expr": "count(kafka_brokers)"}],
+          "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4}
+        },
+        {
+          "type": "timeseries",
+          "title": "Consumer Lag",
+          "targets": [{"expr": "sum(kafka_consumergroup_lag) by (consumergroup, topic)"}],
+          "gridPos": {"x": 0, "y": 4, "w": 24, "h": 8}
+        },
+        {
+          "type": "timeseries",
+          "title": "Topic Partitions",
+          "targets": [{"expr": "sum(kafka_topic_partitions) by (topic)"}],
+          "gridPos": {"x": 0, "y": 12, "w": 24, "h": 8}
+        }
+      ]
+    }

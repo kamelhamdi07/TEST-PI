@@ -4,38 +4,37 @@
 
     <div class="card-header">
       <h2>Payments Management</h2>
-      <span class="count">{{payments.length}} Records</span>
+      <div class="header-actions">
+        <span class="count">{{ payments.length }} Records</span>
+        <button type="button" class="btn-pdf" (click)="exportPdf()">Export PDF</button>
+      </div>
     </div>
     <div class="filters">
-
-  <input
-    type="text"
-    placeholder="Search by ID or Method..."
-    [(ngModel)]="searchTerm"
-  />
-
-  <select [(ngModel)]="selectedStatus">
-    <option value="">All Status</option>
-    <option value="PENDING">Pending</option>
-    <option value="PAID">Paid</option>
-    <option value="FAILED">Failed</option>
-  </select>
-
-  <select [(ngModel)]="selectedMethod">
-    <option value="">All Methods</option>
-    <option value="CASH">Cash</option>
-    <option value="CARD">Card</option>
-    <option value="ONLINE">Online</option>
-  </select>
-
-</div>
+      <input type="text"
+             placeholder="Search"
+             [(ngModel)]="searchTerm"
+             (ngModelChange)="currentPage = 1"
+             name="searchTerm"
+             maxlength="100" />
+      <select [(ngModel)]="selectedStatus" (ngModelChange)="currentPage = 1" name="selectedStatus">
+        <option value="">All Status</option>
+        <option value="PENDING">Pending</option>
+        <option value="PAID">Paid</option>
+        <option value="FAILED">Failed</option>
+      </select>
+      <select [(ngModel)]="selectedMethod" (ngModelChange)="currentPage = 1" name="selectedMethod">
+        <option value="">All Methods</option>
+        <option value="CASH">Cash</option>
+        <option value="CARD">Card</option>
+        <option value="ONLINE">Online</option>
+      </select>
+    </div>
 
 
     <table class="modern-table">
 
       <thead>
         <tr>
-          <th>ID</th>
           <th>Amount</th>
           <th>Method</th>
           <th>Status</th>
@@ -45,8 +44,7 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let p of filteredPayments">
-          <td>#{{p.paymentId}}</td>
+        <tr *ngFor="let p of paginatedPayments">
           <td class="amount">{{p.amount}} TND</td>
           <td>{{p.method}}</td>
 
@@ -63,17 +61,61 @@
 
           <td>{{p.date | date:'short'}}</td>
 
-          <td>
-            <button class="delete-btn"
-              (click)="deletePayment(p.paymentId)">
-              Delete
-            </button>
+          <td class="actions-cell">
+            <button type="button" class="update-btn" (click)="startEditPayment(p)">Update</button>
+            <button type="button" class="delete-btn" (click)="deletePayment(p.paymentId)">Delete</button>
           </td>
         </tr>
       </tbody>
 
     </table>
 
+    <div class="pagination" *ngIf="filteredPayments.length > 0">
+      <button type="button" class="pagination-btn" [disabled]="currentPage <= 1" (click)="goToPagePayment(currentPage - 1)">
+        ‹ Précédent
+      </button>
+      <span class="pagination-info">Page {{ currentPage }} / {{ totalPagesPayment }}</span>
+      <button type="button" class="pagination-btn" [disabled]="currentPage >= totalPagesPayment" (click)="goToPagePayment(currentPage + 1)">
+        Suivant ›
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Update Payment -->
+  <div class="modal-overlay" *ngIf="editingPayment" (click)="cancelEditPayment()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <h3>Modifier le paiement</h3>
+      <form (ngSubmit)="savePayment()" *ngIf="editingPayment">
+        <div class="modal-field">
+          <label>Montant (TND)</label>
+          <input type="number" [(ngModel)]="editingPayment.amount" name="editAmount" required min="0.01" step="0.01" />
+        </div>
+        <div class="modal-field">
+          <label>Méthode</label>
+          <select [(ngModel)]="editingPayment.method" name="editMethod" required>
+            <option value="CARD">Card</option>
+            <option value="CASH">Cash</option>
+            <option value="ONLINE">Online</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Statut</label>
+          <select [(ngModel)]="editingPayment.status" name="editStatus" required>
+            <option value="PENDING">Pending</option>
+            <option value="PAID">Paid</option>
+            <option value="FAILED">Failed</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Date</label>
+          <input type="date" [(ngModel)]="editingPayment.date" name="editDate" required />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="pagination-btn" (click)="cancelEditPayment()">Annuler</button>
+          <button type="submit" class="update-btn">Enregistrer</button>
+        </div>
+      </form>
+    </div>
   </div>
 
 </div>

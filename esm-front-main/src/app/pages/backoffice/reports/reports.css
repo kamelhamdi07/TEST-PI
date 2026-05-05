@@ -1,5 +1,4 @@
-/* CARD CONTAINER */
-.reports-card {
+.report-wrapper {
   background: white;
   padding: 25px;
   border-radius: 14px;
@@ -20,9 +19,11 @@
   display: flex;
   gap: 15px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
-.filters input {
+.filters input,
+.filters select {
   padding: 10px 14px;
   border-radius: 8px;
   border: 1px solid #ddd;
@@ -35,12 +36,69 @@
   box-shadow: 0 0 0 2px rgba(106,90,205,0.2);
 }
 
-/* TABLE */
+.secondary-btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d7d7d7;
+  background: #f8f8f8;
+  cursor: pointer;
+}
+
+.error-banner {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #f3c5c5;
+  background: #fff1f1;
+  color: #a42828;
+  font-size: 13px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.kpi-card {
+  border: 1px solid #eceaf8;
+  border-radius: 10px;
+  background: #faf9ff;
+  padding: 12px;
+}
+
+.kpi-card p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.kpi-card h3 {
+  margin: 6px 0 0;
+  color: #5b3cc4;
+}
+
+.table-wrap {
+  border: 1px solid #edeaf7;
+  border-radius: 12px;
+  overflow: auto;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  border-radius: 12px;
-  overflow: hidden;
+}
+
+.qr-cell {
+  width: 84px;
+}
+
+.qr-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  border: 1px solid #eee;
 }
 
 /* TABLE HEADER */
@@ -62,19 +120,18 @@ td {
   color: #555;
 }
 
-/* ROW HOVER */
 tbody tr:hover {
   background-color: #f5f3ff;
   transition: 0.2s;
 }
 
-/* REVENUE STYLE */
-.amount {
-  font-weight: bold;
-  color: #28a745;
+.actions-cell {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-/* DELETE BUTTON */
 .delete-btn {
   background: #ff4d6d;
   color: white;
@@ -87,5 +144,44 @@ tbody tr:hover {
 
 .delete-btn:hover {
   background: #e63950;
-  transform: scale(1.05);
+}
+
+.status-pill {
+  display: inline-block;
+  background: #f4f4f4;
+  color: #333;
+  border: 1px solid #e3e3e3;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.status-open {
+  background: #eef2ff;
+  color: #3741a0;
+  border-color: #d5dcff;
+}
+
+.status-in-progress {
+  background: #fff7e6;
+  color: #8a4b00;
+  border-color: #ffe2b5;
+}
+
+.status-resolved {
+  background: #e9f9ee;
+  color: #0a6f39;
+  border-color: #c8f0d6;
+}
+
+.status-rejected {
+  background: #fff0f0;
+  color: #b42318;
+  border-color: #ffd2d0;
+}
+
+.empty-state {
+  text-align: center;
+  color: #777;
+  padding: 20px 0;
 }

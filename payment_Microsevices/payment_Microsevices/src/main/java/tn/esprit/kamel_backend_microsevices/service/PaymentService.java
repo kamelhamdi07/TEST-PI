@@ -1,22 +1,52 @@
 package tn.esprit.kamel_backend_microsevices.service;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.kamel_backend_microsevices.entitiy.PaymentEntity;
 import tn.esprit.kamel_backend_microsevices.repository.PaymentRepository;
 
 
 @Service
 public class PaymentService {
+    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
     private final PaymentRepository repository;
+    private final EmailService emailService;
 
-    public PaymentService(PaymentRepository repository) {
+    public PaymentService(PaymentRepository repository, EmailService emailService) {
         this.repository = repository;
+        this.emailService = emailService;
     }
 
+    @Transactional
     public PaymentEntity create(PaymentEntity p) {
         p.setPaymentId(null); // safety
-        return repository.save(p);
+        PaymentEntity saved = repository.save(p);
+
+        String clientEmail = "kamel.hamdi@esprit.tn";
+        String subject = "New Payment Created";
+        String body = "Dear Client,\n\n"
+                + "Thank you for your payment. A new payment has been created with the following details:\n\n"
+                + "Payment ID: " + saved.getPaymentId() + "\n"
+                + "Amount: " + saved.getAmount() + "\n"
+                + "Method: " + saved.getMethod() + "\n"
+                + "Status: " + saved.getStatus() + "\n"
+                + "Date: " + saved.getDate() + "\n"
+                + "Student ID: " + saved.getStudentId() + "\n"
+                + "Course ID: " + saved.getCourseId() + "\n"
+                + "Enrollment ID: " + saved.getEnrollmentId() + "\n\n"
+                + "We appreciate your trust in our platform. If you have any questions, "
+                + "please contact our support team.\n\n"
+                + "Best regards,\n"
+                + "Payment Support Team";
+        try {
+            emailService.sendEmail(clientEmail, subject, body);
+        } catch (Exception e) {
+            logger.warn("Payment created, but confirmation email could not be sent for paymentId={}", saved.getPaymentId(), e);
+        }
+        return saved;
     }
 
     public List<PaymentEntity> findAll() {

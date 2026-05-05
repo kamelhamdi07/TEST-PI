@@ -1,0 +1,40 @@
+name: CD eureka-server
+
+on:
+  workflow_run:
+    workflows: ["CI eureka-server"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Image tag to deploy
+        required: false
+        default: latest
+
+permissions:
+  contents: read
+
+env:
+  SERVICE_NAME: eureka-server
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/eureka-server
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event != 'pull_request')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p "$HOME/.kube"
+          echo "${{ secrets.KUBE_CONFIG_BASE64 }}" | base64 -d > "$HOME/.kube/config"
+          chmod 600 "$HOME/.kube/config"
+
+      - name: Deploy manifests
+        run: |
+          kubectl apply -f k8s/base/00-namespace.yaml
+          kubectl apply -f k8s/eureka-server/
+          TAG="${{ github.event.inputs.image_tag || github.event.workflow_run.head_sha }}"
+          kubectl -n pi-platform set image deployment/eureka-server eureka-server=${IMAGE_NAME}:${TAG}
+          kubectl -n pi-platform rollout status deployment/eureka-server --timeout=180s

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: pi-platform
+  labels:
+    app: payment-service
+spec:
+  selector:
+    app: payment-service
+  ports:
+    - name: http
+      port: 8083
+      targetPort: 8083

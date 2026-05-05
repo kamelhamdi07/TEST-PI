@@ -1,7 +1,15 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ReportService, Report } from '../../services/report';
+import { ReportService, Reclamation, ReclamationCategory, ReclamationPriority } from '../../services/report';
+
+interface ReclamationForm {
+  subject: string;
+  message: string;
+  studentEmail: string;
+  category: ReclamationCategory;
+  priority: ReclamationPriority;
+}
 
 @Component({
   selector: 'app-report-front',
@@ -11,36 +19,63 @@ import { ReportService, Report } from '../../services/report';
   styleUrl: './report-front.css'
 })
 export class ReportFront {
-
- report: Report = {
-  id: 0,
-  title: '',
-  description: '',
-  totalRevenue: 0,
-  createdDate: new Date().toISOString()
-};
-
-
-  constructor(private reportService: ReportService) {}
-
- submit() {
-
-  const payload = {
-    ...this.report,
-    createdDate: new Date().toISOString()
+  report: ReclamationForm = {
+    subject: '',
+    message: '',
+    studentEmail: '',
+    category: 'OTHER',
+    priority: 'MEDIUM'
   };
+  notification: { message: string; type: 'success' | 'error' } | null = null;
+  private notificationTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  this.reportService.addReport(payload)
-    .subscribe({
-      next: (res) => {
-        console.log('Report saved', res);
-        alert('Report saved successfully ✅');
+  constructor(
+    private reportService: ReportService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  showNotification(message: string, type: 'success' | 'error'): void {
+    if (this.notificationTimeout) clearTimeout(this.notificationTimeout);
+    this.notification = { message, type };
+    this.cdr.detectChanges();
+    this.notificationTimeout = setTimeout(() => {
+      this.notification = null;
+      this.notificationTimeout = null;
+      this.cdr.detectChanges();
+    }, 4000);
+  }
+
+  closeNotification(): void {
+    if (this.notificationTimeout) clearTimeout(this.notificationTimeout);
+    this.notification = null;
+    this.notificationTimeout = null;
+    this.cdr.detectChanges();
+  }
+
+  submit(form: NgForm): void {
+    if (form?.valid !== true) return;
+
+    const payload: Partial<Reclamation> = {
+      ...this.report,
+      status: 'IN_PROGRESS'
+    };
+
+    this.reportService.addReport(payload).subscribe({
+      next: () => {
+        this.showNotification('Reclamation envoyee avec succes.', 'success');
+        this.report = {
+          subject: '',
+          message: '',
+          studentEmail: '',
+          category: 'OTHER',
+          priority: 'MEDIUM'
+        };
+        form.resetForm(this.report);
       },
       error: (err) => {
         console.error(err);
-        alert('Error saving report ❌');
+        this.showNotification('Erreur lors de l\'envoi de la reclamation.', 'error');
       }
     });
-}
-
+  }
 }

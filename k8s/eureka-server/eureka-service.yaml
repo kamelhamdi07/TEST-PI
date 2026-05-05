@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eureka-server
+  namespace: pi-platform
+  labels:
+    app: eureka-server
+spec:
+  selector:
+    app: eureka-server
+  ports:
+    - name: http
+      port: 8761
+      targetPort: 8761
