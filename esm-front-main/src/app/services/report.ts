@@ -23,7 +23,7 @@ export interface Reclamation {
 })
 export class ReportService {
 
-  private apiUrl = 'http://localhost:8085/api/reports';
+  private apiUrl = '/api/reports';
   private readonly storageKey = 'reclamation-cache-v1';
   private cachedReclamations: Reclamation[] = [];
 

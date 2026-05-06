@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class PaymentService {
 
-  private apiUrl = 'http://localhost:8083/api/payments';
+  private apiUrl = '/api/payments';
 
  
 
