@@ -2,6 +2,11 @@
 
 This repository is prepared with separated CI and CD pipelines per deployable unit.
 
+For a Jenkins-based local pipeline with SonarQube, Docker, Minikube, Prometheus and Grafana, see:
+
+- `Jenkinsfile`
+- `docs/JENKINS-MINIKUBE-PIPELINE.md`
+
 ## Pipeline layout
 
 Backend:
@@ -22,6 +27,16 @@ Each CI workflow is independent. Each CD workflow is also independent and is tri
 - `SONAR_HOST_URL`: SonarQube URL, for example `http://sonarqube.example.com`
 - `SONAR_TOKEN`: token with permission to analyze projects
 - `KUBE_CONFIG_BASE64`: base64 encoded kubeconfig for the kubeadm cluster
+
+For local validation with GitHub-hosted runners, `http://localhost:9000` does not work because it points to the GitHub runner, not to the developer machine. Expose local SonarQube temporarily with Cloudflare Tunnel or ngrok, then use the public HTTPS URL as `SONAR_HOST_URL`.
+
+Current local validation example:
+
+```text
+SONAR_HOST_URL=https://presentations-possibly-spirits-mathematical.trycloudflare.com
+```
+
+Keep Docker Desktop, the `sonarqube` container, and the tunnel process running while GitHub Actions is executing.
 
 Create the kubeconfig secret from a trusted machine:
 
