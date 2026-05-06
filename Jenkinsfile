@@ -147,12 +147,19 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''
+                    script {
+                        def sonarHostUrl = params.SONAR_HOST_URL?.trim()
+                        if (sonarHostUrl == 'http://localhost:9000') {
+                            sonarHostUrl = 'http://host.docker.internal:9000'
+                        }
+
+                        sh """
                         sonar-scanner \
-                          -Dsonar.host.url="${SONAR_HOST_URL}" \
+                          -Dsonar.host.url="${sonarHostUrl}" \
                           -Dsonar.token="${SONAR_TOKEN}" \
                           -Dsonar.projectVersion="${IMAGE_TAG}"
-                    '''
+                        """
+                    }
                 }
             }
         }
