@@ -26,7 +26,7 @@ Each image is also tagged as `latest`.
 
 ## Jenkins prerequisites
 
-Install these tools on the Jenkins agent:
+The Jenkins agent must have these tools:
 
 - JDK 17
 - Maven 3.9+
@@ -35,6 +35,31 @@ Install these tools on the Jenkins agent:
 - Minikube
 - kubectl
 - SonarScanner CLI
+
+The default `jenkins/jenkins:lts` Docker image does not include these tools. For local validation, build and run the prepared Jenkins image:
+
+```bash
+docker rm -f jenkins-local jenkins-devops || true
+docker compose -f jenkins/docker-compose.yml up -d --build
+```
+
+Open Jenkins:
+
+```text
+http://localhost:8081
+```
+
+Get the first admin password:
+
+```bash
+docker exec jenkins-devops cat /var/jenkins_home/secrets/initialAdminPassword
+```
+
+Check installed tools inside the container:
+
+```bash
+docker exec jenkins-devops sh -lc "mvn -version && node -v && npm -v && docker --version && sonar-scanner --version && kubectl version --client && minikube version"
+```
 
 Create a Jenkins secret text credential:
 
