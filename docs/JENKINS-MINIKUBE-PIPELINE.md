@@ -93,7 +93,7 @@ This avoids pushing images to an external registry during local validation.
 | --- | --- | --- |
 | `GIT_REPOSITORY_URL` | empty | Optional GitHub repository URL. Empty means Jenkins uses the job SCM. |
 | `GIT_BRANCH` | `main` | Branch used when `GIT_REPOSITORY_URL` is set. |
-| `SONAR_HOST_URL` | `http://localhost:9000` | SonarQube URL reachable from Jenkins. |
+| `SONAR_HOST_URL` | `http://host.docker.internal:9000` | SonarQube URL reachable from Jenkins when Jenkins runs in Docker Desktop. |
 | `IMAGE_REGISTRY` | `pi-platform` | Local image namespace or registry prefix. |
 | `MINIKUBE_PROFILE` | `minikube` | Minikube profile name. |
 | `USE_MINIKUBE_DOCKER` | `true` | Build images inside Minikube Docker. |

@@ -20,7 +20,7 @@ pipeline {
     parameters {
         string(name: 'GIT_REPOSITORY_URL', defaultValue: '', description: 'Optional GitHub repository URL. Empty value uses the Jenkins job SCM.')
         string(name: 'GIT_BRANCH', defaultValue: 'main', description: 'Branch used when GIT_REPOSITORY_URL is provided.')
-        string(name: 'SONAR_HOST_URL', defaultValue: 'http://localhost:9000', description: 'SonarQube server URL reachable from the Jenkins agent.')
+        string(name: 'SONAR_HOST_URL', defaultValue: 'http://host.docker.internal:9000', description: 'SonarQube server URL reachable from the Jenkins agent.')
         string(name: 'IMAGE_REGISTRY', defaultValue: 'pi-platform', description: 'Image namespace/registry used for Minikube images.')
         string(name: 'MINIKUBE_PROFILE', defaultValue: 'minikube', description: 'Minikube profile used by kubectl and Docker.')
         booleanParam(name: 'USE_MINIKUBE_DOCKER', defaultValue: true, description: 'Build images directly inside the Minikube Docker daemon.')
