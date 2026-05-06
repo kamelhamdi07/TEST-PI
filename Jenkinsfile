@@ -89,7 +89,10 @@ pipeline {
                 dir(FRONTEND_SERVICE.dir) {
                     script {
                         def hasTestScript = sh(script: 'npm pkg get scripts.test --silent | grep -vq null', returnStatus: true) == 0
-                        if (hasTestScript) {
+                        def hasCiTestScript = sh(script: 'npm pkg get scripts.test:ci --silent | grep -vq null', returnStatus: true) == 0
+                        if (hasCiTestScript) {
+                            sh 'npm run test:ci'
+                        } else if (hasTestScript) {
                             sh 'npm test -- --watch=false'
                         } else {
                             echo 'No frontend npm test script found; skipping frontend tests.'
