@@ -24,7 +24,7 @@ pipeline {
         string(name: 'IMAGE_REGISTRY', defaultValue: 'pi-platform', description: 'Image namespace/registry used for Minikube images.')
         string(name: 'MINIKUBE_PROFILE', defaultValue: 'minikube', description: 'Minikube profile used by kubectl and Docker.')
         booleanParam(name: 'USE_MINIKUBE_DOCKER', defaultValue: false, description: 'Build images directly inside the Minikube Docker daemon when it is reachable from Jenkins.')
-        booleanParam(name: 'DEPLOY_TO_MINIKUBE', defaultValue: true, description: 'Apply Kubernetes manifests and deploy the generated images.')
+        booleanParam(name: 'DEPLOY_TO_MINIKUBE', defaultValue: false, description: 'Apply Kubernetes manifests and deploy the generated images when Minikube is reachable from this Jenkins agent.')
         booleanParam(name: 'INSTALL_MONITORING', defaultValue: true, description: 'Apply Prometheus, Grafana, kube-state-metrics and Kafka exporter manifests.')
     }
 
