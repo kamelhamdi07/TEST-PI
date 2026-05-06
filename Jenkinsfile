@@ -159,7 +159,7 @@ pipeline {
                 script {
                     def services = BACKEND_SERVICES + [FRONTEND_SERVICE]
                     def dockerEnv = params.USE_MINIKUBE_DOCKER
-                        ? "eval \\$(minikube -p ${params.MINIKUBE_PROFILE} docker-env)"
+                        ? 'eval $(minikube -p "' + params.MINIKUBE_PROFILE + '" docker-env)'
                         : 'true'
 
                     services.each { service ->
