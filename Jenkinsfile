@@ -23,7 +23,7 @@ pipeline {
         string(name: 'SONAR_HOST_URL', defaultValue: 'http://host.docker.internal:9000', description: 'SonarQube server URL reachable from the Jenkins agent.')
         string(name: 'IMAGE_REGISTRY', defaultValue: 'pi-platform', description: 'Image namespace/registry used for Minikube images.')
         string(name: 'MINIKUBE_PROFILE', defaultValue: 'minikube', description: 'Minikube profile used by kubectl and Docker.')
-        booleanParam(name: 'USE_MINIKUBE_DOCKER', defaultValue: true, description: 'Build images directly inside the Minikube Docker daemon.')
+        booleanParam(name: 'USE_MINIKUBE_DOCKER', defaultValue: false, description: 'Build images directly inside the Minikube Docker daemon when it is reachable from Jenkins.')
         booleanParam(name: 'DEPLOY_TO_MINIKUBE', defaultValue: true, description: 'Apply Kubernetes manifests and deploy the generated images.')
         booleanParam(name: 'INSTALL_MONITORING', defaultValue: true, description: 'Apply Prometheus, Grafana, kube-state-metrics and Kafka exporter manifests.')
     }
@@ -174,7 +174,25 @@ pipeline {
                 script {
                     def services = BACKEND_SERVICES + [FRONTEND_SERVICE]
                     def dockerEnv = params.USE_MINIKUBE_DOCKER
-                        ? 'if minikube -p "' + params.MINIKUBE_PROFILE + '" docker-env > /tmp/minikube-docker-env 2>/tmp/minikube-docker-env.err; then . /tmp/minikube-docker-env; else echo "Minikube Docker daemon unavailable; using the default Docker daemon."; cat /tmp/minikube-docker-env.err || true; fi'
+                        ? '''
+                            DEFAULT_DOCKER_HOST="${DOCKER_HOST:-}"
+                            DEFAULT_DOCKER_TLS_VERIFY="${DOCKER_TLS_VERIFY:-}"
+                            DEFAULT_DOCKER_CERT_PATH="${DOCKER_CERT_PATH:-}"
+
+                            if minikube -p "''' + params.MINIKUBE_PROFILE + '''" docker-env > /tmp/minikube-docker-env 2>/tmp/minikube-docker-env.err; then
+                                . /tmp/minikube-docker-env
+                                if ! docker info >/dev/null 2>&1; then
+                                    echo "Minikube Docker daemon is not reachable from Jenkins; using the default Docker daemon."
+                                    if [ -n "${DEFAULT_DOCKER_HOST}" ]; then export DOCKER_HOST="${DEFAULT_DOCKER_HOST}"; else unset DOCKER_HOST; fi
+                                    if [ -n "${DEFAULT_DOCKER_TLS_VERIFY}" ]; then export DOCKER_TLS_VERIFY="${DEFAULT_DOCKER_TLS_VERIFY}"; else unset DOCKER_TLS_VERIFY; fi
+                                    if [ -n "${DEFAULT_DOCKER_CERT_PATH}" ]; then export DOCKER_CERT_PATH="${DEFAULT_DOCKER_CERT_PATH}"; else unset DOCKER_CERT_PATH; fi
+                                    unset MINIKUBE_ACTIVE_DOCKERD
+                                fi
+                            else
+                                echo "Minikube Docker daemon unavailable; using the default Docker daemon."
+                                cat /tmp/minikube-docker-env.err || true
+                            fi
+                        '''
                         : 'true'
 
                     services.each { service ->
