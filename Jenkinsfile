@@ -174,7 +174,7 @@ pipeline {
                 script {
                     def services = BACKEND_SERVICES + [FRONTEND_SERVICE]
                     def dockerEnv = params.USE_MINIKUBE_DOCKER
-                        ? 'eval $(minikube -p "' + params.MINIKUBE_PROFILE + '" docker-env)'
+                        ? 'if minikube -p "' + params.MINIKUBE_PROFILE + '" docker-env > /tmp/minikube-docker-env 2>/tmp/minikube-docker-env.err; then . /tmp/minikube-docker-env; else echo "Minikube Docker daemon unavailable; using the default Docker daemon."; cat /tmp/minikube-docker-env.err || true; fi'
                         : 'true'
 
                     services.each { service ->
@@ -196,7 +196,13 @@ pipeline {
             }
             steps {
                 script {
-                    sh "minikube -p ${params.MINIKUBE_PROFILE} status"
+                    def minikubeReady = sh(script: "minikube -p ${params.MINIKUBE_PROFILE} status >/dev/null 2>&1", returnStatus: true) == 0
+                    if (!minikubeReady) {
+                        echo "Minikube profile '${params.MINIKUBE_PROFILE}' is not ready. Skipping Kubernetes deployment."
+                        env.SKIP_K8S_DEPLOY = 'true'
+                        return
+                    }
+
                     sh 'kubectl apply -f k8s/base/00-namespace.yaml'
                     sh 'kubectl apply -f k8s/mysql/'
                     sh 'kubectl apply -f k8s/eureka-server/'
@@ -221,10 +227,17 @@ pipeline {
                 expression { return params.DEPLOY_TO_MINIKUBE && params.INSTALL_MONITORING }
             }
             steps {
-                sh 'kubectl apply -f monitoring/namespace.yaml'
-                sh 'kubectl apply -f monitoring/'
-                sh "kubectl -n ${env.MONITORING_NAMESPACE} rollout status deployment/prometheus --timeout=180s"
-                sh "kubectl -n ${env.MONITORING_NAMESPACE} rollout status deployment/grafana --timeout=180s"
+                script {
+                    if (env.SKIP_K8S_DEPLOY == 'true') {
+                        echo 'Kubernetes deployment was skipped, so monitoring deployment is skipped too.'
+                        return
+                    }
+
+                    sh 'kubectl apply -f monitoring/namespace.yaml'
+                    sh 'kubectl apply -f monitoring/'
+                    sh "kubectl -n ${env.MONITORING_NAMESPACE} rollout status deployment/prometheus --timeout=180s"
+                    sh "kubectl -n ${env.MONITORING_NAMESPACE} rollout status deployment/grafana --timeout=180s"
+                }
             }
         }
     }
