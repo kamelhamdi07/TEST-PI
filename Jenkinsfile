@@ -149,16 +149,21 @@ pipeline {
                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                     script {
                         def sonarHostUrl = params.SONAR_HOST_URL?.trim()
+                        if (sonarHostUrl?.contains('=')) {
+                            sonarHostUrl = sonarHostUrl.substring(sonarHostUrl.indexOf('=') + 1).trim()
+                        }
                         if (sonarHostUrl == 'http://localhost:9000') {
                             sonarHostUrl = 'http://host.docker.internal:9000'
                         }
 
-                        sh """
-                        sonar-scanner \
-                          -Dsonar.host.url="${sonarHostUrl}" \
-                          -Dsonar.token="${SONAR_TOKEN}" \
-                          -Dsonar.projectVersion="${IMAGE_TAG}"
-                        """
+                        withEnv(["SONAR_HOST_URL_RESOLVED=${sonarHostUrl}"]) {
+                            sh '''
+                                sonar-scanner \
+                                  -Dsonar.host.url="${SONAR_HOST_URL_RESOLVED}" \
+                                  -Dsonar.token="${SONAR_TOKEN}" \
+                                  -Dsonar.projectVersion="${IMAGE_TAG}"
+                            '''
+                        }
                     }
                 }
             }
