@@ -44,13 +44,13 @@ data:
         {
           "type": "timeseries",
           "title": "CPU Usage by Pod",
-          "targets": [{"expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\",pod!=\"\"}[5m])) by (namespace,pod)"}],
+          "targets": [{"expr": "sum(rate(container_cpu_usage_seconds_total{namespace!=\"\",pod!=\"\",cpu=\"total\"}[5m])) by (namespace,pod)"}],
           "gridPos": {"x": 0, "y": 4, "w": 12, "h": 8}
         },
         {
           "type": "timeseries",
           "title": "Memory Usage by Pod",
-          "targets": [{"expr": "sum(container_memory_working_set_bytes{container!=\"\",pod!=\"\"}) by (namespace,pod)"}],
+          "targets": [{"expr": "sum(container_memory_working_set_bytes{namespace!=\"\",pod!=\"\"}) by (namespace,pod)"}],
           "gridPos": {"x": 12, "y": 4, "w": 12, "h": 8}
         }
       ]
