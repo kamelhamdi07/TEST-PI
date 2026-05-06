@@ -9,3 +9,4 @@ data:
   EUREKA_CLIENT_FETCH_REGISTRY: "false"
   MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,metrics
   MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: always
+  SPRING_APPLICATION_JSON: '{"management":{"metrics":{"distribution":{"percentiles-histogram":{"http.server.requests":true}}}}}'

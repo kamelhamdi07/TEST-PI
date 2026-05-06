@@ -11,3 +11,4 @@ data:
   SPRING_JPA_HIBERNATE_DDL_AUTO: update
   MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,metrics
   MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: always
+  SPRING_APPLICATION_JSON: '{"management":{"metrics":{"distribution":{"percentiles-histogram":{"http.server.requests":true}}}}}'
